@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import axios from 'axios'
 import { Chart } from "react-google-charts"
+import DropDown from './components/dropDown'
 
 const link = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY"
 
@@ -37,26 +38,29 @@ class App extends React.Component {
     return (
       <div className="App">
         { this.state.error ? <div>Error while fetching neos</div> :
-      <Chart
-      width={'1000px'}
-      height={'700px'}
-    chartType="BarChart"
-    loader={<div>Loading Chart</div>}
-    data={[
-      ['NEO Name', 'Min Estimated diameter (Km)', 'Max Estimated diameter (Km)'],
-      ...this.state.neos
-    ]}
-    options={{
-      title: 'Estimated Diameter of NEO objects',
-      chartArea: { width: '50%' },
-      hAxis: {
-        title: 'Estimated diameter (Km)',
-        minValue: 0,
-      },
-      vAxis: {
-        title: 'NEOs',
-      },
-    }} />}
+        <div>
+          <DropDown />
+          <Chart
+          width={'1000px'}
+          height={'700px'}
+          chartType="BarChart"
+          loader={<div>Loading Chart</div>}
+          data={[
+            ['NEO Name', 'Min Estimated diameter (Km)', 'Max Estimated diameter (Km)'],
+            ...this.state.neos
+          ]}
+          options={{
+            title: 'Estimated Diameter of NEO objects',
+            chartArea: { width: '50%' },
+            hAxis: {
+              title: 'Estimated diameter (Km)',
+              minValue: 0,
+            },
+            vAxis: {
+              title: 'NEOs',
+            },
+        }} />
+    </div>}
       </div>
     )
   }
