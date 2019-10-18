@@ -11,8 +11,10 @@ class App extends React.Component {
     super(props)
     this.state = {
       neos: [],
-      error: false
+      error: false,
+      res: null
     }
+    this.selectOrbitingBody = this.selectOrbitingBody.bind(this)
   }
 
   async componentDidMount() {
@@ -28,18 +30,33 @@ class App extends React.Component {
       newNEO.sort(function(a, b) {
         return (b[1] + b[2]) / 2 - (a[1] + a[2]) / 2
       })
-      this.setState({ neos: newNEO })
+      this.setState({ neos: newNEO, res })
     } catch (error) {
       this.setState({ error: true })
     }
   }
 
+  selectOrbitingBody(event) {
+    const newNeo = []
+    this.state.res.forEach(element => {
+      if (element['close_approach_data'].length && element['close_approach_data'].some(function(el){
+        return el['orbiting_body'] === event.target.value
+      })) {
+        newNeo.push([
+          element['name'],
+          element['estimated_diameter']['kilometers']['estimated_diameter_min'],
+          element['estimated_diameter']['kilometers']['estimated_diameter_max']
+        ])
+      }
+    })
+    this.setState({ neos: newNeo })
+  }
   render() {
     return (
       <div className="App">
         { this.state.error ? <div>Error while fetching neos</div> :
         <div>
-          <DropDown />
+          <DropDown clicked={this.selectOrbitingBody}/>
           <Chart
           width={'1000px'}
           height={'700px'}
