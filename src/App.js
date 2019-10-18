@@ -17,6 +17,7 @@ class App extends React.Component {
     }
     this.selectOrbitingBody = this.selectOrbitingBody.bind(this)
     this.switchView = this.switchView.bind(this)
+    this.download = this.download.bind(this)
   }
 
   async componentDidMount() {
@@ -58,6 +59,35 @@ class App extends React.Component {
     this.setState({ chart: !this.state.chart })
   }
 
+  download () {
+    let str = 'NEO Name; Min Estimated diameter (Km); Max Estimated diameter (Km)\r\n'
+    this.state.neos.forEach(el => {
+      let line = ''
+      for (let i in el){
+        if (line != '') line += ';'
+        line += el[i]
+      }
+      str += line + '\r\n'
+    })
+    const filenmae = 'export.csv'
+
+    const blob = new Blob([str], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filenmae);
+    } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) {
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filenmae);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -86,6 +116,8 @@ class App extends React.Component {
               title: 'NEOs',
             },
         }} /> :
+        <div>
+        <button onClick={this.download}>Download</button>
         <Chart
   width={'1000px'}
   height={'700px'}
@@ -104,6 +136,7 @@ class App extends React.Component {
   }}
   rootProps={{ 'data-testid': '1' }}
 />
+</div>
       }
     </div>}
       </div>
