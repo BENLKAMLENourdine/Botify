@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
 import axios from 'axios'
-import { Chart } from "react-google-charts"
 import DropDown from './components/dropDown'
+import Bar from './components/bar'
+import Table from './components/table'
 
 const link = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY"
 
@@ -92,53 +93,18 @@ class App extends React.Component {
     return (
       <div className="App">
         { this.state.error ? <div>Error while fetching neos</div> :
-        <div>
-          <DropDown clicked={this.selectOrbitingBody}/>
-          <button onClick={this.switchView}>Switch View</button>
-          { this.state.chart ?
-          <Chart
-          width={'1000px'}
-          height={'700px'}
-          chartType="BarChart"
-          loader={<div>Loading Chart</div>}
-          data={[
-            ['NEO Name', 'Min Estimated diameter (Km)', 'Max Estimated diameter (Km)'],
-            ...this.state.neos
-          ]}
-          options={{
-            title: 'Estimated Diameter of NEO objects',
-            chartArea: { width: '50%' },
-            hAxis: {
-              title: 'Estimated diameter (Km)',
-              minValue: 0,
-            },
-            vAxis: {
-              title: 'NEOs',
-            },
-        }} /> :
-        <div>
-        <button onClick={this.download}>Download</button>
-        <Chart
-  width={'1000px'}
-  height={'700px'}
-  chartType="Table"
-  loader={<div>Loading Chart</div>}
-  data={[
-    [
-      { type: 'string', label: 'NEO Name' },
-      { type: 'number', label: 'Min estimated diameter (Km)' },
-      { type: 'number', label: 'Max estimated diameter (Km)' },
-    ],
-    ...this.state.neos
-  ]}
-  options={{
-    showRowNumber: true,
-  }}
-  rootProps={{ 'data-testid': '1' }}
-/>
-</div>
-      }
-    </div>}
+          <div>
+            <DropDown clicked={this.selectOrbitingBody}/>
+            <button onClick={this.switchView}>Switch View</button>
+            { this.state.chart ?
+                <Bar neos={this.state.neos} /> :
+                <div>
+                  <button onClick={this.download}>Download</button>
+                  <Table neos={this.state.neos} />
+                </div>
+            }
+          </div>
+        }
       </div>
     )
   }
